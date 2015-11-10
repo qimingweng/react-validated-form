@@ -44,6 +44,7 @@ const createForm = (setup) => (Component) => {
           const values = this.state.values.map(value => value.set('shouldValidate', true));
           const error = getFirstErrorInMap(values);
 
+          // This sets the state of the `ValidatingValue`s to shouldValidate
           this.setState({
             values,
           }, () => {
