@@ -9,12 +9,26 @@ const createForm = (setup) => (Component) => {
   // Discussion: in the future, a function might be allowed, like getValues,
   // that takes props as the first argument...
 
-  const initialValues = Map(setup.values)
-    .map(value => new ValidatingValue(value));
-
   return class DecoratedComponent extends React.Component {
-    state = {
-      values: initialValues,
+    constructor(props) {
+      // This needs to be in the constructor because we may want to fetch
+      // default text values based on props
+      super(props);
+
+      const initialValues = Map(setup.values)
+        .map((value, k) => {
+          if (typeof value === 'function') {
+            return new ValidatingValue(value(props));
+          } else if (typeof value === 'object' && value !== null) {
+            return new ValidatingValue(value);
+          } else {
+            throw new Error(`the value "${k}" must be either an object or a function`);
+          }
+        });
+
+      this.state = {
+        values: initialValues,
+      };
     }
     render() {
       const getValueForKey = (key) => this.state.values.get(key);
@@ -50,6 +64,6 @@ const createForm = (setup) => (Component) => {
       />;
     }
   }
-}
+};
 
 export default createForm;
