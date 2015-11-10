@@ -2,7 +2,7 @@
   "name": "react-validated-form",
   "version": "1.0.0",
   "description": "A validated form library for react that's reasonable.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

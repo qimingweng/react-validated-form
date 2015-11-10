@@ -13,71 +13,12 @@
 // no errors
 
 import ValidatingValue from './ValidatingValue';
+import transformFunctions from './transformFunctions';
+import errorFunctions from './errorFunctions';
 import {reduce} from 'lodash';
 
 const NO_ERROR = null;
 const EMPTY_VALUE = null;
-
-// Transforms takes strings and output values of any type
-// However, no transform should output a null value, because that's really
-// confusing for the defaults to handle
-const transformFunctions = {
-  number(string) {
-    return Number(string);
-  },
-  gradeFloat(string) {
-    if (string.length && string[string.length - 1] === '%') {
-      string = string.slice(0, string.length - 1);
-    }
-    if (!string) return null;
-    if (string === 'NM') return null;
-    return Number(string) / 100;
-  },
-  multiplierNumber(string) {
-    if (string.length > 0 && string[string.length - 1].toLowerCase() === 'x') {
-      const slice = string.slice(0, string.length - 1);
-      if (slice === '') return NaN;
-      return Number(slice);
-    } else {
-      return Number(string);
-    }
-  },
-  // percentageNumber(string) {
-  //   if (string.length > 0 && string[string.length - 1] === '%') {
-  //     const slice = string.slice(0, string.length - 1);
-  //     if (slice === '') return NaN;
-  //     return Number(slice) / 100;
-  //   } else {
-  //     return Number(string) / 100;
-  //   }
-  // },
-};
-
-// error functions take values and arguments and check to see if the value is valid
-const errorFunctions = {
-  /**
-   * @param string {String}
-   */
-  isNumber(value) {
-    if (typeof value !== 'number') return 'Not number';
-    if (isNaN(value)) return 'Not number';
-    return NO_ERROR;
-  },
-  /**
-   * @param string {String}
-   */
-  max(string, count = 8) {
-    if (string.length > count) return 'Max ' + count;
-    return NO_ERROR;
-  },
-  /**
-   * @param string {String}
-   */
-  min(string, count = 8) {
-    if (string.length < count) return 'Min ' + count;
-    return NO_ERROR;
-  },
-};
 
 const transformValidatingValue = (validatingValue) => {
   const text = validatingValue.text;
