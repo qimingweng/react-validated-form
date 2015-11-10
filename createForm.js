@@ -17,9 +17,7 @@ const createForm = (setup) => (Component) => {
       values: initialValues,
     }
     render() {
-      const getValueForKey = (key) => {
-        return this.state.values.get(key);
-      };
+      const getValueForKey = (key) => this.state.values.get(key);
 
       const changeValueForKey = (key) => (event) => {
         this.setState({
