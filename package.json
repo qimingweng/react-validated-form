@@ -1,8 +1,12 @@
 {
   "name": "react-validated-form",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A validated form library for react that's reasonable.",
   "main": "lib/index.js",
+  "contributors": [{
+    "name": "Qiming Weng",
+    "email": "qiming@edusight.co"
+  }],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
