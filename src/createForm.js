@@ -21,9 +21,9 @@ const createForm = (setup) => (Component) => {
             return new ValidatingValue(value(props));
           } else if (typeof value === 'object' && value !== null) {
             return new ValidatingValue(value);
-          } else {
-            throw new Error(`the value "${k}" must be either an object or a function`);
           }
+
+          throw new Error(`the value "${k}" must be either an object or a function`);
         });
 
       this.state = {
@@ -64,7 +64,7 @@ const createForm = (setup) => (Component) => {
         changeValueForKey={changeValueForKey}
       />;
     }
-  }
+  };
 };
 
 export default createForm;

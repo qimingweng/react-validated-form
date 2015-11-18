@@ -20,9 +20,9 @@ const transformFunctions = {
       const slice = string.slice(0, string.length - 1);
       if (slice === '') return NaN;
       return Number(slice);
-    } else {
-      return Number(string);
     }
+
+    return Number(string);
   },
 };
 

@@ -12,7 +12,6 @@
 // validate functions return either an error string or false for NO_ERROR for
 // no errors
 
-import ValidatingValue from './ValidatingValue';
 import transformFunctions from './transformFunctions';
 import errorFunctions from './errorFunctions';
 import {reduce} from 'lodash';
