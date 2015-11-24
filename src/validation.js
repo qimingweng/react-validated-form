@@ -83,6 +83,7 @@ const getFirstErrorInMap = (mapOfValidatingValues) => {
 };
 
 export default {
+  transformValidatingValue,
   getError,
   getFirstErrorInMap,
 };

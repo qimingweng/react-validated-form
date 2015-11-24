@@ -1,11 +1,14 @@
 import ValidatingValue from './ValidatingValue';
+import Form from './Form';
 import createForm from './createForm';
 import FormInput from './FormInput';
-import validation from './validation';
+import {getError, getFirstErrorInMap} from './validation';
 
 export default {
-  ...validation,
-  ValidatingValue,
   createForm,
+  Form,
   FormInput,
+  getError,
+  getFirstErrorInMap,
+  ValidatingValue,
 };

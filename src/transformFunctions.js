@@ -6,7 +6,10 @@ const transformFunctions = {
     return Number(string);
   },
   // Transforms '95.5%' => 0.955
-  gradeFloat: (string) => {
+  // I call this a grade float because it's quite specific in that it solves
+  // the 'NM' case
+  gradeFloat: (initString) => {
+    let string = initString;
     if (string.length && string[string.length - 1] === '%') {
       string = string.slice(0, string.length - 1);
     }

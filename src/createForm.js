@@ -1,30 +1,33 @@
 import React from 'react';
-import {Map} from 'immutable';
+import {Map, Set} from 'immutable';
 import ValidatingValue from './ValidatingValue';
-import {getFirstErrorInMap} from './validation';
+import {getFirstErrorInMap, transformValidatingValue} from './validation';
 import Q from 'q';
 
+/**
+ * createForm injects a few things into the component to be decorated
+ */
 const createForm = (setup) => (Component) => {
   // .values is required in setup
   // Discussion: in the future, a function might be allowed, like getValues,
   // that takes props as the first argument...
 
   return class DecoratedComponent extends React.Component {
+    static displayName = `Form(${Component.displayName})`
     constructor(props) {
       // This needs to be in the constructor because we may want to fetch
       // default text values based on props
       super(props);
 
-      const initialValues = Map(setup.values)
-        .map((value, k) => {
-          if (typeof value === 'function') {
-            return new ValidatingValue(value(props));
-          } else if (typeof value === 'object' && value !== null) {
-            return new ValidatingValue(value);
-          }
+      const initialValues = Map(setup.values).map((value, k) => {
+        if (typeof value === 'function') {
+          return new ValidatingValue(value(props));
+        } else if (typeof value === 'object' && value !== null) {
+          return new ValidatingValue(value);
+        }
 
-          throw new Error(`the value "${k}" must be either an object or a function`);
-        });
+        throw new Error(`the value "${k}" must be either an object or a function that returns an object`);
+      });
 
       this.state = {
         values: initialValues,
@@ -39,10 +42,15 @@ const createForm = (setup) => (Component) => {
         });
       };
 
-      const checkForValidValues = () => {
+      const checkForValidValues = (keys = Set()) => {
         return Q.Promise((resolve, reject) => {
           const values = this.state.values.map(value => value.set('shouldValidate', true));
-          const error = getFirstErrorInMap(values);
+
+          const valuesToCheck = keys.count() ?
+            values.filter((_, k) => keys.has(k)) :
+            values;
+
+          const error = getFirstErrorInMap(valuesToCheck);
 
           // This sets the state of the `ValidatingValue`s to shouldValidate
           this.setState({
@@ -51,7 +59,7 @@ const createForm = (setup) => (Component) => {
             if (error) {
               reject(error);
             } else {
-              resolve(this.state.values.map(value => value.text));
+              resolve(valuesToCheck.map(value => transformValidatingValue(value)));
             }
           });
         });

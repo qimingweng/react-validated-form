@@ -6,7 +6,7 @@ const errorFunctions = {
    * @param string {string}
    * @returns {ErrorString?}
    */
-  isNumber: (value) => {
+  number: (value) => {
     if (typeof value !== 'number') return 'Not number';
     if (isNaN(value)) return 'Not number';
     return NO_ERROR;
@@ -41,5 +41,9 @@ const errorFunctions = {
     return 'Invalid email';
   },
 };
+
+if (typeof window != 'undefined') {
+  window.__errorFunctions = errorFunctions;
+}
 
 export default errorFunctions;
