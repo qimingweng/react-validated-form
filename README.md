@@ -16,6 +16,8 @@ There are really a couple of cool things
 
 # Exported modules
 
+Skip below for the examples.
+
 ## ValidatingValue
 
 `Record`
@@ -96,3 +98,73 @@ This function takes a ValidatingValue and checks to see if it validates. If ther
 ## getFirstErrorInMap
 
 This is more of an internal function which will save computation time by only finding the first error in an Immutable.Map of ValidatingValues. If one value fails, then generally no further action needs to happen.
+
+# Examples
+
+```js
+// SomeForm.js
+
+import React from 'react';
+import {createForm, Form, FormInput} from 'react-validated-form';
+
+@createForm({
+  values: {
+    // You can use a function to return the initial value based on this component's properties
+    email: props => ({
+      text: props.defaultEmail || '',
+      // needs to be an email with at least 8 characters (the min is mostly to demo multiple validations)
+      validation: 'email,min:4',
+      required: true,
+    }),
+    password: {
+      text: '',
+      validation: 'min:8',
+      required: true,
+    },
+  },
+})
+export default class SomeForm extends React.Component {
+  static propTypes = {
+    getValueForKey: PropTypes.func,
+    changeValueForKey: PropTypes.func,
+    checkForValidValues: PropTypes.func,
+  }
+  handleSubmit = () => {
+    this.props.checkForValidValues().then(values => {
+      console.log('Successful validation!', values.toJS());
+      // Send to server and do something...
+    }).fail(() => {
+      console.log('Uh oh something went wrong...');
+      // Maybe change state and show some other global error?
+      // You can iterate through the ValidatingValues to find all the errors again here...
+    });
+  }
+  render = () => {
+    const {
+      props: {
+        getValueForKey,
+        changeValueForKey,
+      },
+    } = this;
+
+    return <Form onSubmit={this.handleSubmit}>
+      <div>
+        {/* We can nest and structure this UI however we like */}
+        <FormInput
+          value={getValueForKey('email')}
+          onChange={changeValueForKey('email')}
+        />
+
+        <div>
+          <div>We can have any other components layered any other way</div>
+          <FormInput
+            value={getValueForKey('password')}
+            onChange={changeValueForKey('password')}
+          />
+        </div>
+      </div>
+      <a onClick={this.handleSubmit}>Submit Form</a>
+    </Form>;
+  }
+}
+```
